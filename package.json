@@ -4,7 +4,7 @@
   "description": "server for workfily",
   "main": "server.js",
   "scripts": {
-    "build": "npm i",
+    "build": "react-scripts build",
     "start": "node server.js",
     "server": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
