@@ -1,0 +1,1 @@
+const User = mongoose.model('users', UserSchema, 'úsers')

@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Route files
-// const auth = require('./routes/auth');
+  const auth = require('./routes/auth');
 // const employee = require('./routes/employeeRoutes');
 // const images = require('./routes/imagesRoutes');
 // const errorHandler = require('./middleware/error');
@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === 'development') {
 // const openAi = require('./routes/openAiRoutes');
 
 // //mount routers
-// app.use('/api/v1/auth', auth);
+ app.use('/api/v1/auth', auth);
 // app.use('/api/v1/employee', employee);
 // app.use('/api/v1/images', images);
 // app.use('/api/v1/designation', payroll);
