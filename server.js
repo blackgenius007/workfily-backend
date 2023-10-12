@@ -23,11 +23,11 @@ cron.schedule('0 0 * * *', async () => {
 
 const app = express();
 
-// app.use(cors(
-//   {
-//     origin:['https://filyapp.onrender.com']
-//   }
-// ));
+app.use(cors(
+  {
+    origin:['https://filyapp.onrender.com']
+  }
+));
 
 // cookie parser
 app.use(cookieParser());
