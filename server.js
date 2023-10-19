@@ -5,7 +5,6 @@ const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path'); 
 const cors =require('cors')
-const colors = require('colors');
 const cron = require('node-cron');
  
 
