@@ -43,19 +43,19 @@ if (process.env.NODE_ENV === 'development') {
 
 // Route files
   const auth = require('./routes/auth');
-// const employee = require('./routes/employeeRoutes');
-// const images = require('./routes/imagesRoutes');
-// const errorHandler = require('./middleware/error');
-// const payroll = require('./routes/payrollRoutes');
-// const openAi = require('./routes/openAiRoutes');
+const employee = require('./routes/employeeRoutes');
+const images = require('./routes/imagesRoutes');
+const errorHandler = require('./middleware/error');
+const payroll = require('./routes/payrollRoutes');
+const openAi = require('./routes/openAiRoutes');   
 
 // //mount routers
  app.use('/api/v1/auth', auth);
-// app.use('/api/v1/employee', employee);
-// app.use('/api/v1/images', images);
-// app.use('/api/v1/designation', payroll);
-// app.use('/api/v1/openAi', openAi);
-// app.use(errorHandler);
+app.use('/api/v1/employee', employee);
+app.use('/api/v1/images', images);
+app.use('/api/v1/designation', payroll);
+app.use('/api/v1/openAi', openAi);
+app.use(errorHandler);
 
 // Serve frontend
 app.use(express.static(path.join(__dirname, 'build')));

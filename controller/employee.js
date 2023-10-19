@@ -8,7 +8,7 @@ const Employee = require('../models/Employee.js');
 const User = require('../models/User');
 const Payroll = require('../models/Payroll.js');
 const Score = require('../models/scoreCard');
-const referalCodes = require('referral-codes');
+ 
 var cron = require('node-cron');
 const moment = require('moment');
 const Resume = require('../models/ResumeDetail');
