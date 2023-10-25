@@ -1,43 +1,48 @@
-const dotenv = require('dotenv');
+require('dotenv').config()
+require('express-async-errors') 
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const corsOptions = require('./config/corsOptions')
 const express = require('express');
 const connectDB = require('./config/db');
-const path = require('path'); 
+const mongoose = require('mongoose');
+const app = express();
+const path = require('path');
+const { logger, logEvents } = require('./middleware/logger')   
 const cors =require('cors')
 const cron = require('node-cron');
+const colors = require('colors');
+PORT = process.env.PORT || 5000 
+console.log(process.env.NODE_ENV)
  
-
-// Load env vars
-dotenv.config({ path: `./config/config.env` });
 
 // connect to database
 connectDB();
+
+//Dev logging middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+app.use(cors(corsOptions))
+
 // Schedule exemption to run every day at a specific time
 cron.schedule('0 0 * * *', async () => {
   console.log('Running exempt status update job...');
   await Employee.updateExemptStatus();
 });
 
-const app = express();
-
-app.use(cors(
-  {
-    origin:['https://filyapp.onrender.com']
-  }
-));
-
+ 
+// Body parser
+app.use(express.json());
+   
 // cookie parser
 app.use(cookieParser());
 
-// Body parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// Serve frontend
+app.use('/', express.static(path.join(__dirname, 'public')))
 
-//Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+ 
 
 // Route files
   const auth = require('./routes/auth');
@@ -47,7 +52,7 @@ const errorHandler = require('./middleware/error');
 const payroll = require('./routes/payrollRoutes');
 const openAi = require('./routes/openAiRoutes');   
 
-// //mount routers
+ //mount routers
  app.use('/api/v1/auth', auth);
 app.use('/api/v1/employee', employee);
 app.use('/api/v1/images', images);
@@ -55,23 +60,30 @@ app.use('/api/v1/designation', payroll);
 app.use('/api/v1/openAi', openAi);
 app.use(errorHandler);
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, 'build')));
+app.all('*', (req, res) => {
+  res.status(404)
+  if (req.accepts('html')) {
+      res.sendFile(path.join(__dirname, 'views', '404.html'))
+  } else if (req.accepts('json')) {
+      res.json({ message: '404 Not Found' })
+  } else {
+      res.type('txt').send('404 Not Found')
+  }
+})
+ 
+app.use(errorHandler)
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB'.cyan.underline.bold)
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}` .yellow.bold))
+})
+
+mongoose.connection.on('error', err => {
+  console.log(err)
+  logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
+})
 
 
-// app.use(errorHandler)
-
-PORT = process.env.PORT || 5000;
-const server = app.listen(
-  PORT,
-  console.log(
-    `server is running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow
-      .bold
-  )
-);
+ 
 
  
